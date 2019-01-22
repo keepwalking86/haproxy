@@ -71,7 +71,7 @@ Khi đó sử dụng `cookie cookie_name insert <options>`. "cookie_name" là gi
         server web3 192.168.1.112:8080 cookie web3 check
 
 Chúng ta check thử xem HAProxy sẽ response giá trị cookie như thế nào khi sử dụng insert
-<img src="images/session-cookie-setup-by-haproxy.jpg" />
+<img src="../images/session-cookie-setup-by-haproxy.jpg" />
 
 Khi đó chúng ta thấy giá trị cookie mà HAProxy phản hồi cho client là `WEB=web1`
 
@@ -86,7 +86,7 @@ Khi đó sử dụng `cookie SESSION_ID prefix <option>`. “SESSION_ID” là t
 
 Chúng ta check thử xem header của haproxy server và response của nó. Sử dụng: `curl -I http://haproxy-ip-address:80/`
 
-<img src="images/session-cookie-setup-by-app.jpg" />
+<img src="../images/session-cookie-setup-by-app.jpg" />
 
 Khi đó chúng ta thấy HAProxy server phản hồi với header như hình, với giá trị cookie được thay đổi là: `laravel_session=web1~eyJpdiI6InJuOUN…1Lc0E9PSIsInZhbH` với giá trị prefix là web1~ trước giá trị cookie của application mà HAProxy đã thêm vào.
 

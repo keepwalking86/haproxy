@@ -14,6 +14,7 @@ ____
   - [2.3 Ví dụ về phần proxy](#example_proxy)
 
 ==========================================================
+
 Mặc định tệp cấu hình HAProxy là /etc/haproxy/haproxy.cfg
 
 Chúng ta xem qua cấu hình tệp haproxy.cfg đơn giản sau:

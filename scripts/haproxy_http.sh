@@ -1,3 +1,35 @@
+#!/bin/bash
+#keepwalking86
+#Initial
+IP_SERVER1=192.168.10.111
+IP_SERVER2=192.168.10.112
+IP_SERVER3=192.168.10.113
+
+if [ -z $1 ]; then
+        echo "Please enter your domain to configure load balancing"
+	echo "$0 your_domain"
+        exit 1
+fi
+DOMAIN=$1
+
+# check the domain is valid!
+PATTERN="^([[:alnum:]]([[:alnum:]\-]{0,61}[[:alnum:]])?\.)+[[:alpha:]]{2,6}$"
+if [[ "$DOMAIN" =~ $PATTERN ]]; then
+        DOMAIN=`echo $DOMAIN | tr '[A-Z]' '[a-z]'`
+else
+        echo "Invalid domain. Please enter your domain as example.com"
+        exit 1
+fi
+
+#Replace dots with underscores
+DOMAIN_ACL=`echo $DOMAIN | sed 's/\./_/g'`
+
+echo "Setup LB HAProxy for $DOMAIN"
+sleep 5
+
+#Create haproxy.cfg
+cat >haproxy.cfg <<EOF
+
 # Global settings
 global
         pidfile     /var/run/haproxy.pid
@@ -32,14 +64,14 @@ defaults
 ## Frontend section
 frontend http-in
         bind *:80
-        acl example-acl hdr(host) -i example.local
-        use_backend example if example-acl
+        acl $DOMAIN_ACL-acl hdr(host) -i $DOMAIN
+        use_backend $DOMAIN_ACL if $DOMAIN_ACL-acl
 ## Backend section
-backend example
+backend $DOMAIN
         balance roundrobin
-        server server1 192.168.10.111:8080 weight 1 check
-        server server2 192.168.10.112:8080 weight 1 check
-        server server3 192.168.10.113:8080 weight 1 check
+        server server1 $IP_SERVER1:8080 weight 1 check
+        server server2 $IP_SERVER2:8080 weight 1 check
+        server server3 $IP_SERVER3:8080 weight 1 check
 ## Statistics settings
 listen statistics
         bind *:1986
@@ -50,3 +82,4 @@ listen statistics
         stats uri /stats
         stats refresh 30s
         stats auth keepwalking86:ILoveVietnam$
+EOF

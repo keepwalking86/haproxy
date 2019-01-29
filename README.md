@@ -6,7 +6,11 @@ Một số nội dung về HAProxy, gồm:
 
 - Thuật toán [cân bằng tải trong HAProxy](docs/About-HAProxy-Load-Balancing.md)
 
-- Một số tệp cấu hình haproxy LB/HA cho Web/DB
+- Cấu hình [HAProxy với SSL](docs/HAProxy-SSL.md)
+
+- Cấu hình [High Availability cho Redis-Sentinel](docs/HAProxy-for-Redis-Sentinel.md)
+
+- Một số [mẫu cấu hình haproxy LB/HA cho Web/DB](conf/)
 
 <img src="images/ha-lb-HAProxy.png" />
 

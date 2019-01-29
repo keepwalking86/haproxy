@@ -1,10 +1,19 @@
 Trong phần này, chúng ta sẽ giới thiệu về một số thuật toán cân bằng tải phổ biến trong HAProxy, và cách thức cố định session với sticky session
 
-## 1. Các thuật toán cân bằng tải
+# Nội dung
+
+- [1. Các thuật toán cân bằng tải](#algorithm)
+  - [1.1 Roundrobin](#roundrobin)
+  - [1.2 leastconn](#leastconn)
+- [2. Sticky session](#sticky_session)
+  - [2.1 Session cookie được thiết lập bởi HAProxy](#insert_cookie)
+  - [2.2 Sử dụng session cookie của ứng dụng](#prefix_cookie)
+
+## <a name="algorithm">1. Các thuật toán cân bằng tải</a>
 
 HAProxy hỗ trợ các thuật toán sau: roundrobin, static-rr, leastconn, first, source, uri, url_parm, hdr, rdp-cookie. Ở đây, chúng ta sẽ giới thiệu một số thuật toán thường được sử dụng.
 
-### 1.1 Roundrobin
+### <a name="roundrobin">1.1 Roundrobin</a>
 
 Là thuật toán luân chuẩn theo vòng. Các server sẽ được sử dụng lần lượt theo vòng, phụ thuộc vào giá trị trọng số của nó. roundrobin là thuật toán được sử dụng mặc định load balancing khi không có thuật toán nào được chỉ định.
 
@@ -29,7 +38,7 @@ Khi đó mỗi 05 request, 2 request đầu tiên sẽ được chuyển tiếp 
 
 Mặc định weight có giá trị là 1, giá trị tối đa của weight là 256. Nếu server giá trị weight là 0, khi đó nó sẽ không tham gia vào cụm server trong load balancing.
 
-### 1.2 leastconn
+### <a name="leastconn">1.2 leastconn</a>
 
 Đây là thuật toán dựa trên tính toán số lượng kết nối để thực hiện cân bằng tải cho server, nó sẽ tự động lựa chọn server với số lượng kết nối đang hoạt động là nhỏ nhất, để lượng connection giữa các server là tương đương nhau.
 
@@ -45,7 +54,7 @@ Thuật toán này khắc phục được tình trạng một số server có l�
 
 Thuật toán này hoạt động tốt khi mà hiệu suất và khả năng tải của các server là tương đương nhau.
 
-## 2. Sticky session
+## <a name="sticky_session">2. Sticky session</a>
 
 Trong môi trường web, nhiều khi chúng ta cần cố định session của user, như để duy trì trạng thái login. Khi đó, chúng ta cần cố định session trên một server. HAProxy hỗ trợ một số thuật toán Load Balancing duy trì trạng thái kết nối mà cho phép cố định session như hdr, rdp-cookie, source, uri hoặc url_param. Chẳng hạn như:
 
@@ -61,7 +70,7 @@ Sticky session cho phép cố định session của users mà sử dụng cookie
 
 Để sử dụng sticky session trong HAProxy, chúng ta thêm tùy chọn `cookie cookie_name insert/prefix` vào trong phần backend.
 
-### 2.1 Session cookie được thiết lập bởi HAProxy
+### <a name="insert_cookie">2.1 Session cookie được thiết lập bởi HAProxy</a>
 
 Khi đó sử dụng `cookie cookie_name insert <options>`. "cookie_name" là giá trị mà HAProxy sẽ chèn vào (insert). Khi client quay lại (tức là cũng là client này và request tiếp theo), HAProxy sẽ biết được server nào để chọn cho client này. Ví dụ:
 
@@ -71,11 +80,14 @@ Khi đó sử dụng `cookie cookie_name insert <options>`. "cookie_name" là gi
         server web3 192.168.1.112:8080 cookie web3 check
 
 Chúng ta check thử xem HAProxy sẽ response giá trị cookie như thế nào khi sử dụng insert
+
+<p align="center">
 <img src="../images/session-cookie-setup-by-haproxy.png" />
+</p>
 
 Khi đó chúng ta thấy giá trị cookie mà HAProxy phản hồi cho client là `WEB=web1`
 
-### 2.2 Sử dụng session cookie của ứng dụng
+### <a name="prefix_cookie">2.2 Sử dụng session cookie của ứng dụng</a>
 
 Khi đó sử dụng `cookie SESSION_ID prefix <option>`. “SESSION_ID” là tên cookie của application như PHPSESSID, JSESSID, laravel_session, … Khi đó, HAProxy sẽ sử dụng session id cookie mà được tạo bởi application để duy trì kết nối giữa một client và một server backend. Cách thức hoạt động, đó là HAProxy sẽ mở rộng cookie với một SESSION ID cookie hoặc cookie đang tồn tại, mà có đặt trước nó là giá trị cookie của server và dấu ~.
 
@@ -86,7 +98,9 @@ Khi đó sử dụng `cookie SESSION_ID prefix <option>`. “SESSION_ID” là t
 
 Chúng ta check thử xem header của haproxy server và response của nó. Sử dụng: `curl -I http://haproxy-ip-address:80/`
 
+<p align="center"> 
 <img src="../images/session-cookie-setup-by-app.png" />
+</p>
 
 Khi đó chúng ta thấy HAProxy server phản hồi với header như hình, với giá trị cookie được thay đổi là: `laravel_session=web1~eyJpdiI6InJuOUN…1Lc0E9PSIsInZhbH` với giá trị prefix là web1~ trước giá trị cookie của application mà HAProxy đã thêm vào.
 

@@ -35,12 +35,11 @@ echo "Setup LB HAProxy for $DOMAIN"
 sleep 2
 
 #Check pem for $DOMAIN
-PEM_PATH=/etc/ssl/$DOMAIN/$DOMAIN.pem
+PEM_PATH=test.sh
 if [ ! -f $PEM_PATH ]; then
-        echo "Creating a self-signed certificate for $DOMAIN"
-        sleep 2
-        
-
+        echo "Please Creating a certificate from LetsEncrypt for $DOMAIN"
+        exit 1
+fi
 
 #Create haproxy.cfg
 echo "Creating haproxy configuration file"
@@ -80,6 +79,7 @@ defaults
 ## Frontend section
 frontend http-in
         bind *:80
+        bind *:443 ssl no-sslv3 crt $PEM_PATH
         acl $DOMAIN_ACL-acl hdr(host) -i $DOMAIN
         use_backend $DOMAIN_ACL if $DOMAIN_ACL-acl
 ## Backend section

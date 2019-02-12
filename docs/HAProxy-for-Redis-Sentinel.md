@@ -125,7 +125,7 @@ Thực hiện start haproxy và tạo vòng lặp kiểm tra thông tin replicat
 `for i in {1..3}; do redis-cli -p 6380 info replication; done`
 
 <p align="center"> 
-<img src="../images/check-redis-ha-with-haproxy" />
+<img src="../images/check-redis-ha-with-haproxy.png" />
 </p>
 
 Ta thấy mỗi lần truy vấn đến 192.168.10.186 với port 3680, giá trị trả về cho role hiện tại là master và có 02 slave được connect.

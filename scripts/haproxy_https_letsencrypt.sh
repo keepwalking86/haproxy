@@ -35,7 +35,7 @@ echo "Setup LB HAProxy for $DOMAIN"
 sleep 2
 
 #Check pem for $DOMAIN
-PEM_PATH=test.sh
+PEM_PATH=/etc/letsencrypt/$DOMAIN/$DOMAIN.pem
 if [ ! -f $PEM_PATH ]; then
         echo "Please Creating a certificate from LetsEncrypt for $DOMAIN"
         exit 1
@@ -44,7 +44,7 @@ fi
 #Create haproxy.cfg
 echo "Creating haproxy configuration file"
 sleep 2
-cat >haproxy.cfg <<EOF
+cat >/etc/haproxy/haproxy.cfg <<EOF
 # Global settings
 global
         pidfile     /var/run/haproxy.pid

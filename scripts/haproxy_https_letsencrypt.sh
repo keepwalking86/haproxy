@@ -35,7 +35,7 @@ echo "Setup LB HAProxy for $DOMAIN"
 sleep 2
 
 #Check pem for $DOMAIN
-PEM_PATH=/etc/letsencrypt/$DOMAIN/$DOMAIN.pem
+PEM_PATH=/etc/letsencrypt/live/$DOMAIN/$DOMAIN.pem
 if [ ! -f $PEM_PATH ]; then
         echo "Please Creating a certificate from LetsEncrypt for $DOMAIN"
         exit 1
@@ -80,10 +80,10 @@ defaults
 frontend http-in
         bind *:80
         bind *:443 ssl no-sslv3 crt $PEM_PATH
-        acl $DOMAIN_ACL-acl hdr(host) -i $DOMAIN
-        use_backend $DOMAIN_ACL if $DOMAIN_ACL-acl
+        acl ${DOMAIN_ACL}-acl hdr(host) -i $DOMAIN
+        use_backend ${DOMAIN_ACL} if ${DOMAIN_ACL}-acl
 ## Backend section
-backend $DOMAIN
+backend ${DOMAIN_ACL}
         balance roundrobin
         server server1 $IP_SERVER1:8080 weight 1 check
         server server2 $IP_SERVER2:8080 weight 1 check

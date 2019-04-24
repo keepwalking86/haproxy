@@ -64,10 +64,10 @@ defaults
 ## Frontend section
 frontend http-in
         bind *:80
-        acl $DOMAIN_ACL-acl hdr(host) -i $DOMAIN
-        use_backend $DOMAIN_ACL if $DOMAIN_ACL-acl
+        acl ${DOMAIN_ACL}-acl hdr(host) -i $DOMAIN
+        use_backend ${DOMAIN_ACL} if ${DOMAIN_ACL}-acl
 ## Backend section
-backend $DOMAIN
+backend ${DOMAIN_ACL}
         balance roundrobin
         server server1 $IP_SERVER1:8080 weight 1 check
         server server2 $IP_SERVER2:8080 weight 1 check

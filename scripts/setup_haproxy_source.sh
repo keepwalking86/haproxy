@@ -33,7 +33,7 @@ tar -zxvf haproxy-${VERSION}.tar.gz
 #Compile the program
 #linux2628 for Linux 2.6.28, 3.x, and above
 cd /opt/haproxy-${VERSION}
-make TARGET=linux2628
+make TARGET=linux2628 USE_OPENSSL=1
 
 echo "${txtyellow}***Install HAProxy***{txtreset}"
 sleep 3

@@ -11,13 +11,13 @@ txtyellow=$(tput setaf 3) # Yellow
 txtreset=$(tput sgr0)     # Text reset
 
 ## Installing prerequisite packages to compile
-echo "${txtyellow}***Install prerequisite packages to compile**{txtreset}"
+echo "${txtyellow}***Install prerequisite packages to compile***{txtreset}"
 sleep 2
 if [ -f /etc/debian_version ]; then
-    sudo apt install make gcc perl pcre-devel zlib-devel
+    sudo apt install make gcc perl pcre-devel zlib-devel libssl-dev
 else
     if [ -f /etc/redhat-release ]; then
-        yum -y install make gcc perl pcre-devel zlib-devel
+        yum -y install make gcc perl pcre-devel zlib-devel openssl-devel
     else "Distro hasn't been supported by this script"
     fi
 fi
@@ -31,6 +31,7 @@ cd /opt && curl -O https://www.haproxy.org/download/1.8/src/haproxy-${VERSION}.t
 tar -zxvf haproxy-${VERSION}.tar.gz
 
 #Compile the program
+#linux2628 for Linux 2.6.28, 3.x, and above
 cd /opt/haproxy-${VERSION}
 make TARGET=linux2628
 

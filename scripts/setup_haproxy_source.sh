@@ -59,19 +59,24 @@ touch /var/lib/haproxy/stats
 curl -o /etc/haproxy/haproxy.cfg https://raw.githubusercontent.com/keepwalking86/haproxy/master/conf/haproxy_http.cfg
 
 #Create Systemd service script
-cat >/lib/systemd/system/haproxy.service<<EOF
+cat >/etc/sysconfig/haproxy<<EOF
+OPTIONS="-x /var/lib/haproxy/stats"
+EOF
+
+cat >/etc/systemd/system/haproxy.service<<EOF
 [Unit]
 Description=HAProxy Load Balancer
-StartLimitInterval=0
-StartLimitBurst=0
-After=syslog.target network.target
+After=network.target
 
 [Service]
+EnvironmentFile=/etc/sysconfig/haproxy
+ExecStartPre=/usr/sbin/haproxy -f /etc/haproxy/haproxy.cfg -c -q
 ExecStart=/usr/sbin/haproxy -W -f /etc/haproxy/haproxy.cfg -p /var/run/haproxy.pid
-ExecReload=/usr/sbin/haproxy -f /etc/haproxy/haproxy.cfg -c -q
+ExecReload=/usr/sbin/haproxy -f /etc/haproxy/haproxy.cfg -c -q \$OPTIONS
 ExecReload=/bin/kill -USR2 \$MAINPID
 KillMode=mixed
 Type=forking
+Restart=always
 
 [Install]
 WantedBy=multi-user.target

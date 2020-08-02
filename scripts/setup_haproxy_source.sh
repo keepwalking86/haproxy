@@ -14,11 +14,14 @@ txtreset=$(tput sgr0)     # Text reset
 echo "${txtyellow}***Install prerequisite packages to compile***{txtreset}"
 sleep 2
 if [ -f /etc/debian_version ]; then
-    sudo apt install make gcc perl pcre-devel zlib-devel libssl-dev
+    sudo apt-get update
+    sudo apt-get install build-essential pcre-devel zlib-devel libssl-dev libssl-dev -y
 else
     if [ -f /etc/redhat-release ]; then
         yum -y install make gcc perl pcre-devel zlib-devel openssl-devel
-    else "Distro hasn't been supported by this script"
+    else 
+        echo "Distro has not been supported by this script"
+        exit 1
     fi
 fi
 
@@ -59,6 +62,7 @@ touch /var/lib/haproxy/stats
 curl -o /etc/haproxy/haproxy.cfg https://raw.githubusercontent.com/keepwalking86/haproxy/master/conf/haproxy_http.cfg
 
 #Create Systemd service script
+[[ ! -d /etc/sysconfig ]] && mkdir -p /etc/sysconfig
 cat >/etc/sysconfig/haproxy<<EOF
 OPTIONS="-x /var/lib/haproxy/stats"
 EOF

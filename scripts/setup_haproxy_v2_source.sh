@@ -16,7 +16,7 @@ echo "${txtyellow}***Install prerequisite packages to compile***{txtreset}"
 sleep 2
 if [ -f /etc/debian_version ]; then
     sudo apt-get update
-    sudo apt-get install build-essential pcre-devel zlib-devel libssl-dev libssl-dev -y
+    sudo apt-get install build-essential make g++ libssl-dev -y
 else
     if [ -f /etc/redhat-release ]; then
         yum -y install make gcc perl pcre-devel zlib-devel openssl-devel
